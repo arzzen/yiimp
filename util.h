@@ -114,6 +114,8 @@ void string_upper(char *s);
 
 int getblocheight(const char *coinb1);
 
+uint64_t share_to_target(double diff);
+
 //////////////////////////////////////////////////////////////////////////
 
 #ifndef max

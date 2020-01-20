@@ -289,5 +289,5 @@ void balloon_hash(const void* input, void* output, const int buflen)
 }
 
 void balloon(const char* input, char* output, unsigned int len) {
-	balloon_hash((void*)input, (void*)output, 262144);
+	balloon_hash((unsigned char*)input, (unsigned char*)output, 8192);
 }

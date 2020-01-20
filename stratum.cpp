@@ -206,7 +206,7 @@ YAAMP_ALGO g_algos[] =
 	{"whirlpool", whirlpool_hash, 1, 0 }, /* sha256d merkleroot */
 	{"whirlpoolx", whirlpoolx_hash, 1, 0, 0},
 
-        {"balloon", balloon, 0x100, 0, 0},
+        {"balloon", balloon, 1, 0, 0},
 
 	{"", NULL, 0, 0},
 };
@@ -398,31 +398,29 @@ int main(int argc, char **argv)
 
 void *monitor_thread(void *p)
 {
-	while(!g_exiting)
-	{
-		sleep(120);
+    while(!g_exiting)
+    {
+            // note: this isn't required by any means, but it sure beats restarting/updating
+            // coins to add the relevant blocknotify statement                          -baz
 
-		if(g_last_broadcasted + YAAMP_MAXJOBDELAY < time(NULL))
-		{
-			g_exiting = true;
-			stratumlogdate("%s dead lock, exiting...\n", g_stratum_algo);
-			exit(1);
-		}
+            sleep(1);
 
-		if(g_max_shares && g_shares_counter) {
+            g_list_coind.Enter();
+            for(CLI li = g_list_coind.first; li; li = li->next)
+            {
+                    YAAMP_COIND *coind = (YAAMP_COIND *)li->data;
+                    json_value *json = rpc_call(&coind->rpc, "getblockcount");
+                    if (!json) continue;
+                    json_int_t amount = json_get_int(json, "result");
 
-			if((g_shares_counter - g_shares_log) > 10000) {
-				stratumlogdate("%s %luK shares...\n", g_stratum_algo, (g_shares_counter/1000u));
-				g_shares_log = g_shares_counter;
-			}
-
-			if(g_shares_counter > g_max_shares) {
-				g_exiting = true;
-				stratumlogdate("%s need a restart (%lu shares), exiting...\n", g_stratum_algo, (unsigned long) g_max_shares);
-				exit(1);
-			}
-		}
-	}
+                    if (coind->height != amount) {
+                            debuglog("coind->height differs from rpc response, forcing new template (%d vs %d)..\n", coind->height, amount);
+                            coind_create_job(coind, true);
+                            job_update();
+		    }
+            }
+            g_list_coind.Leave();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

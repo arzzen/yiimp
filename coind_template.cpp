@@ -63,7 +63,7 @@ YAAMP_JOB_TEMPLATE *coind_create_template_memorypool(YAAMP_COIND *coind)
 //	templ->height = json_get_int(json_result, "height");
 	sprintf(templ->version, "%08x", (unsigned int)json_get_int(json_result, "version"));
 	sprintf(templ->ntime, "%08x", (unsigned int)json_get_int(json_result, "time"));
-	strcpy(templ->nbits, json_get_string(json_result, "bits"));
+	strcpy(templ->nbits, json_get_string(json_result, "nbits"));
 	strcpy(templ->prevhash_hex, json_get_string(json_result, "previousblockhash"));
 
 	json_value_free(json);

@@ -129,5 +129,14 @@ Thanks to globalzon to have released the initial Yaamp source code.
 
 You can support this project donating to tpruvot :
 
-BTC : 1Auhps1mHZQpoX4mCcVL8odU81VakZQ6dR
+BTC : bc1qkg5hd68xtlfrq03stp7xzxufdktetvvs8fpqgn
 
+=======
+###yiimp-zentoshi
+
+contains portions of code from tiltpool
+
+
+to poolops:
+
+no need to crying; the balloon target code in client_submit works with all coins, you really should be using something similar anyway!
